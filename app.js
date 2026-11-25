@@ -8,7 +8,8 @@
 
   var FONT = "'Segoe UI', Arial, sans-serif";
   var MONO = "Consolas, 'Courier New', monospace";
-  var AZUL = '#1F5FBF';
+  var AZUL = '#267D8F';
+  var AMBAR = '#F9B641';
 
   /* ---------- utilidades ---------- */
   function $(s) { return document.querySelector(s); }
@@ -130,10 +131,10 @@
         var cx = x + LW + k * (CW + GAP);
         if (v > 0) {
           var a = 0.1 + 0.8 * Math.pow(v / max, 0.8);
-          out += '<rect x="' + cx + '" y="' + ry + '" width="' + CW + '" height="' + CH + '" rx="4" fill="' + AZUL + '" fill-opacity="' + a.toFixed(2) + '"/>';
+          out += '<rect x="' + cx + '" y="' + ry + '" width="' + CW + '" height="' + CH + '" rx="2" fill="' + AZUL + '" fill-opacity="' + a.toFixed(2) + '"/>';
           out += txt(cx + CW / 2, ry + 17, String(v), 12, a > 0.5 ? '#FFFFFF' : '#14202B', 600, 'middle');
         } else {
-          out += '<rect x="' + cx + '" y="' + ry + '" width="' + CW + '" height="' + CH + '" rx="4" fill="#F4F6F9"/>';
+          out += '<rect x="' + cx + '" y="' + ry + '" width="' + CW + '" height="' + CH + '" rx="2" fill="#F4F6F9"/>';
         }
       }
     }
@@ -153,7 +154,7 @@
       fila.forEach(function (v) {
         var a = 0.1 + 0.8 * Math.pow(v / max, 0.8);
         var st = v > 0
-          ? 'background:rgba(31,95,191,' + a.toFixed(2) + ');color:' + (a > 0.5 ? '#FFFFFF' : '#14202B')
+          ? 'background:rgba(38,125,143,' + a.toFixed(2) + ');color:' + (a > 0.5 ? '#FFFFFF' : '#14202B')
           : 'background:#F4F6F9;color:#5B6773';
         h += '<div class="heat-c" style="' + st + '">' + (v > 0 ? v : '') + '</div>';
       });
@@ -177,20 +178,20 @@
     var copia = !!(opts && opts.copia);
 
     // Encabezado
-    o += '<rect x="24" y="' + y + '" width="548" height="68" rx="10" fill="#F4F6F9"/>';
+    o += '<rect x="24" y="' + y + '" width="548" height="68" rx="4" fill="#F4F6F9"/>';
     o += txt(40, y + 22, 'Elemento de red', 12, '#5B6773');
     o += txt(40, y + 50, eq.nombre, 17, '#14202B', 700, null, MONO);
-    o += '<rect x="584" y="' + y + '" width="180" height="68" rx="10" fill="#F4F6F9"/>';
+    o += '<rect x="584" y="' + y + '" width="180" height="68" rx="4" fill="#F4F6F9"/>';
     o += txt(600, y + 22, 'IP', 12, '#5B6773');
     o += txt(600, y + 50, eq.ip, 17, '#14202B', 700, null, MONO);
-    o += '<rect x="776" y="' + y + '" width="200" height="68" rx="10" fill="#EAF1FB"/>';
+    o += '<rect x="776" y="' + y + '" width="200" height="68" rx="4" fill="#E3F1F4"/>';
     o += txt(792, y + 22, 'Caídas totales', 12, '#5B6773');
     o += txt(792, y + 54, fmt(eq.total), 28, AZUL, 700);
     y += 68 + 14;
 
     // Puerto específico (solo down) con sus caídas por día a la derecha
     if (tipo === 'down' && puerto) {
-      o += '<rect x="24" y="' + y + '" width="952" height="46" rx="10" fill="#FDF3E3"/>';
+      o += '<rect x="24" y="' + y + '" width="952" height="46" rx="4" fill="#FDF3E3"/>';
       o += txt(40, y + 28, 'Puerto específico', 12, '#8A5A00', 700);
       o += txt(150, y + 28, puerto.nombre, 12, '#14202B', 700, null, MONO);
       var dias = Object.keys(puerto.dias).map(Number).sort(function (a, b) { return a - b; }).slice(-4);
@@ -198,7 +199,7 @@
       dias.forEach(function (dia, i) {
         var v = puerto.dias[dia], a = Math.min(0.9, 0.15 + v * 0.1), cx = sx + i * (cw + gp);
         var col = a > 0.5 ? '#FFFFFF' : '#14202B';
-        o += '<rect x="' + cx + '" y="' + (y + 8) + '" width="' + cw + '" height="30" rx="6" fill="' + AZUL + '" fill-opacity="' + a.toFixed(2) + '"/>';
+        o += '<rect x="' + cx + '" y="' + (y + 8) + '" width="' + cw + '" height="30" rx="3" fill="' + AZUL + '" fill-opacity="' + a.toFixed(2) + '"/>';
         o += txt(cx + 10, y + 27, 'Día ' + dia, 11, col);
         o += txt(cx + cw - 10, y + 28, String(v), 14, col, 700, 'end');
       });
@@ -233,8 +234,8 @@
       d.semanas.forEach(function (s, i) {
         var ry = y + 34 + i * 40;
         o += txt(520, ry + 15, s.label, 12, '#5B6773');
-        o += '<rect x="574" y="' + ry + '" width="316" height="20" rx="4" fill="#EEF1F5"/>';
-        o += '<rect x="574" y="' + ry + '" width="' + Math.max(2, 316 * s.valor / smax).toFixed(1) + '" height="20" rx="4" fill="' + (s.valor === smax ? AZUL : '#8FB0E3') + '"/>';
+        o += '<rect x="574" y="' + ry + '" width="316" height="20" rx="2" fill="#EEF1F5"/>';
+        o += '<rect x="574" y="' + ry + '" width="' + Math.max(2, 316 * s.valor / smax).toFixed(1) + '" height="20" rx="2" fill="' + (s.valor === smax ? AMBAR : '#92C4CE') + '"/>';
         o += txt(976, ry + 15, fmt(s.valor), 12, '#14202B', 700, 'end');
       });
       y += 26 + hv.h + 24;
@@ -244,7 +245,7 @@
 
     var H = y;
     var borde = copia
-      ? '<rect x="0.5" y="0.5" width="' + (W - 1) + '" height="' + (H - 1) + '" rx="12" fill="none" stroke="#C9D2DC"/>'
+      ? '<rect x="0.5" y="0.5" width="' + (W - 1) + '" height="' + (H - 1) + '" rx="6" fill="none" stroke="#C9D2DC"/>'
       : '';
     return {
       w: W, h: H,
@@ -313,7 +314,7 @@
 
     html += '<div class="det-grid"><div class="col-sem"><h3>Caídas por semana</h3>';
     d.semanas.forEach(function (s) {
-      html += '<div class="sem-fila"><span class="sem-label">' + s.label + '</span><div class="sem-barra"><span style="width:' + Math.round(s.valor / smax * 100) + '%"></span></div><span class="sem-valor">' + fmt(s.valor) + '</span></div>';
+      html += '<div class="sem-fila"><span class="sem-label">' + s.label + '</span><div class="sem-barra"><span style="width:' + Math.round(s.valor / smax * 100) + '%;background:' + (s.valor === smax ? '#F9B641' : '#267D8F') + '"></span></div><span class="sem-valor">' + fmt(s.valor) + '</span></div>';
     });
     html += '<span class="nota">Reparto de ejemplo</span></div>';
 
@@ -333,7 +334,7 @@
         lista.forEach(function (k) {
           var v = p.dias[k] || 0;
           var st = v > 0
-            ? 'background:rgba(31,95,191,' + Math.min(0.9, 0.15 + v * 0.1).toFixed(2) + ');color:' + (v >= 5 ? '#FFFFFF' : '#14202B')
+            ? 'background:rgba(38,125,143,' + Math.min(0.9, 0.15 + v * 0.1).toFixed(2) + ');color:' + (v >= 5 ? '#FFFFFF' : '#14202B')
             : 'background:#F4F6F9;color:#5B6773';
           html += '<span class="tp-celda" style="' + st + '">' + (v > 0 ? v : '') + '</span>';
         });
@@ -381,12 +382,12 @@
     var eq = eqSel();
     var arriba = evidenciaSVG(estado.tipo, eq, puertoSel());
     var leyenda = '<span class="leyenda">Menos' +
-      [0.1, 0.4, 0.75, 1].map(function (a) { return '<i style="background:rgba(31,95,191,' + a + ')"></i>'; }).join('') + 'Más</span>';
+      [0.1, 0.4, 0.75, 1].map(function (a) { return '<i style="background:rgba(38,125,143,' + a + ')"></i>'; }).join('') + 'Más</span>';
     var sems = eq._d.semanas;
     var smax = Math.max.apply(null, sems.map(function (s) { return s.valor; }));
     var semHtml = '<div class="evid-sem"><h3>Caídas por semana</h3>' + sems.map(function (s) {
       return '<div class="sem-fila"><span class="sem-label">' + s.label + '</span><div class="sem-barra"><span style="width:' +
-        Math.round(s.valor / smax * 100) + '%;background:' + (s.valor === smax ? '#1F5FBF' : '#8FB0E3') + '"></span></div><span class="sem-valor">' + fmt(s.valor) + '</span></div>';
+        Math.round(s.valor / smax * 100) + '%;background:' + (s.valor === smax ? '#F9B641' : '#92C4CE') + '"></span></div><span class="sem-valor">' + fmt(s.valor) + '</span></div>';
     }).join('') + '</div>';
     $('#mg-imagen').innerHTML = '<div class="evid">' + arriba.svg +
       '<div class="evid-fila"><div class="evid-heat"><div class="evid-heat-top"><h3>Cuándo caen · fecha × hora</h3>' + leyenda + '</div>' +
