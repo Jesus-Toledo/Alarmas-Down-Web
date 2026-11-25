@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitor de caídas</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="top">
+    <div class="top-izq">
+      <div class="seg" role="tablist" aria-label="Tipo de reporte">
+        <button id="tab-down" role="tab" type="button">Puertos down</button>
+        <button id="tab-nr" role="tab" type="button">Not responding</button>
+      </div>
+      <h1 id="titulo"></h1>
+      <p class="sub" id="subtitulo"></p>
+    </div>
+    <div class="top-der">
+      <div class="chip-info">
+        <span class="punto" aria-hidden="true"></span>
+        <div>
+          <span class="chip-label">Fuente de datos</span>
+          <span class="chip-valor" id="fuente"></span>
+        </div>
+      </div>
+      <div class="chip-info">
+        <div>
+          <span class="chip-label">Mes</span>
+          <span class="chip-valor" id="mes"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="kpis" id="kpis" aria-label="Resumen"></section>
+
+  <main class="cuerpo">
+    <section class="card ranking" aria-label="Equipos con más caídas">
+      <div class="ranking-head">
+        <h2>Equipos con más caídas</h2>
+        <div class="filtros" id="filtros">
+          <button type="button" data-f="todos" class="activo">Todos</button>
+          <button type="button" data-f="sin">Sin ticket</button>
+          <button type="button" data-f="con">Con ticket</button>
+        </div>
+      </div>
+      <input id="buscar" class="buscar" type="search" placeholder="Buscar por nombre o IP" aria-label="Buscar por nombre o IP">
+      <div class="lista" id="lista"></div>
+      <p class="nota" id="nota-lista"></p>
+    </section>
+
+    <section class="card detalle" id="detalle" aria-label="Detalle del equipo"></section>
+  </main>
+
+  <div class="acciones">
+    <button type="button" class="btn primario" id="btn-homologar">Homologar ticket</button>
+    <button type="button" class="btn secundario" id="btn-grafico">Crear gráfico</button>
+  </div>
+
+</div>
+
+<!-- Modal: Homologar ticket -->
+<div class="scrim" id="modal-homologar" hidden>
+  <div class="modal modal-estrecho" role="dialog" aria-modal="true" aria-labelledby="mh-titulo">
+    <h2 id="mh-titulo">Homologar ticket</h2>
+
+    <div class="campo">
+      <span class="campo-titulo">Título del ticket</span>
+      <div class="caja">
+        <div class="caja-texto" id="mh-t"></div>
+        <button type="button" class="btn-copiar" data-copiar="mh-t">Copiar</button>
+      </div>
+    </div>
+
+    <div class="campo">
+      <span class="campo-titulo">Cuerpo del ticket</span>
+      <div class="caja">
+        <div class="caja-texto cuerpo-scroll" id="mh-c"></div>
+        <button type="button" class="btn-copiar" data-copiar="mh-c">Copiar</button>
+      </div>
+    </div>
+
+    <div class="modal-pie">
+      <button type="button" class="btn secundario" data-cerrar>Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Crear gráfico -->
+<div class="scrim" id="modal-grafico" hidden>
+  <div class="modal modal-ancho" role="dialog" aria-modal="true" aria-labelledby="mg-titulo">
+    <div class="modal-cab">
+      <h2 id="mg-titulo">Crear gráfico</h2>
+      <p class="sub">Esta imagen es la que se copia al ticket.</p>
+    </div>
+    <div class="imagen-wrap" id="mg-imagen"></div>
+    <div class="modal-pie">
+      <button type="button" class="btn primario" id="mg-copiar">Copiar imagen</button>
+      <button type="button" class="btn secundario" data-cerrar>Cerrar</button>
+    </div>
+    <p class="aviso" id="mg-aviso" role="status"></p>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="plantillas.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
