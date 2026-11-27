@@ -17,7 +17,7 @@
   var AMBAR = '#F9B641';
 
   var modelo = null;   // { modo: 'excel' | 'ejemplo', archivo, leido, tickets, tipos: { down, nr } }
-  var estado = { tipo: 'down', filtro: 'todos', busqueda: '', mes: { down: 0, nr: 0 }, sel: { down: null, nr: null }, puerto: 0 };
+  var estado = { tipo: 'down', filtro: 'todos', busqueda: '', mes: { down: 0, nr: 0 }, sel: { down: null, nr: null }, puerto: 0, manual: {} };
   var tokenDetalle = 0;
 
   /* ---------- utilidades ---------- */
@@ -164,9 +164,25 @@
       return j;
     });
   }
-  function puertoSel(eq) {
-    if (estado.tipo !== 'down' || !eq || !eq._d) return null;
-    return eq._d.puertos[estado.puerto] || null;
+  /* Puertos que van al ticket y a la imagen.
+     Por defecto: los que caen de forma recurrente (al menos 3 caídas y 10 % o más de las del puerto que más cae; máximo 4).
+     El usuario puede marcar o desmarcar puertos en la tabla. */
+  function claveSel(eq) { return estado.tipo + '|' + mesActual().clave + '|' + eq.id; }
+  function autoPuertos(pu) {
+    if (!pu.length) return [];
+    var top = pu[0].total, out = [0];
+    for (var i = 1; i < pu.length && out.length < 4; i++) {
+      if (pu[i].total >= 3 && pu[i].total >= top * 0.1) out.push(i);
+    }
+    return out;
+  }
+  function idxPuertos(eq) {
+    if (estado.tipo !== 'down' || !eq || !eq._d) return [];
+    var m = estado.manual[claveSel(eq)];
+    return m ? m.filter(function (i) { return i < eq._d.puertos.length; }) : autoPuertos(eq._d.puertos);
+  }
+  function puertosSel(eq) {
+    return idxPuertos(eq).sort(function (a, b) { return a - b; }).map(function (i) { return eq._d.puertos[i]; });
   }
 
   /* ---------- tickets ---------- */
@@ -197,6 +213,7 @@
 
   function lineChart(serie, dias, x, y, w, h) {
     var top = niceTop(Math.max.apply(null, serie));
+    y = y + 18; h = h - 18; // espacio arriba para el número del día pico
     var padL = 56, padB = 22;
     var pw = w - padL, ph = h - padB, n = serie.length;
     var out = '';
@@ -223,7 +240,7 @@
     });
     if (pico >= 0) {
       var pc = coords[pico];
-      var arriba = pc[1] - 12 >= y + 8;
+      var arriba = true;
       var ty = arriba ? pc[1] - 12 : pc[1] + 4;
       var tx = arriba ? pc[0] : pc[0] + 11;
       out += '<circle cx="' + pc[0].toFixed(1) + '" cy="' + pc[1].toFixed(1) + '" r="6" fill="' + AMBAR + '" stroke="#FFFFFF" stroke-width="2"/>';
@@ -317,12 +334,19 @@
     o += txt(792, y + 54, fmt(eq.total), 28, AZUL, 700);
     y += 68 + 14;
 
-    // Puerto específico (solo down) con sus caídas por día a la derecha
-    if (tipo === 'down' && puerto) {
-      o += '<rect x="24" y="' + y + '" width="952" height="46" rx="4" fill="#FDF3E3"/>';
-      o += txt(40, y + 28, 'Puerto específico', 12, '#8A5A00', 700);
-      o += txt(150, y + 28, puerto.nombre, 12, '#14202B', 700, null, MONO);
-      y += 46 + 14;
+    // Puertos específicos (solo down): uno por renglón, con sus caídas a la derecha
+    if (tipo === 'down' && puerto && puerto.length) {
+      var MAXP = 6, mostrar = puerto.slice(0, MAXP), extra = puerto.length - mostrar.length;
+      var hb = 18 + mostrar.length * 26 + (extra > 0 ? 22 : 0);
+      o += '<rect x="24" y="' + y + '" width="952" height="' + hb + '" rx="4" fill="#FDF3E3"/>';
+      o += txt(40, y + 28, puerto.length > 1 ? 'Puertos específicos' : 'Puerto específico', 12, '#8A5A00', 700);
+      mostrar.forEach(function (p, i) {
+        var py = y + 28 + i * 26;
+        o += txt(190, py, p.nombre, 12, '#14202B', 700, null, MONO);
+        o += txt(960, py, fmt(p.total) + (p.total === 1 ? ' caída' : ' caídas'), 12, '#8A5A00', 600, 'end');
+      });
+      if (extra > 0) o += txt(190, y + 28 + mostrar.length * 26, '+ ' + extra + ' puerto' + (extra > 1 ? 's' : '') + ' más', 12, '#5B6773');
+      y += hb + 14;
     }
 
     var semVals = d.semanas.map(function (s) { return s.valor; });
@@ -493,8 +517,9 @@
       var cols = 'grid-template-columns:minmax(0,1fr) repeat(' + lista.length + ',' + (typeof d.dias[0] === 'string' ? 60 : 48) + 'px) 56px';
       html += '<div class="seccion"><h3>Puertos que más caen · caídas por día</h3><div class="tabla-puertos"><div class="tp">';
       html += '<div class="tp-fila tp-head" style="' + cols + '"><span>Puerto</span>' + lista.map(function (k) { return '<span style="text-align:center">' + esc(lbl(/^\d+$/.test(k) ? Number(k) : k)) + '</span>'; }).join('') + '<span style="text-align:right">Total</span></div>';
+      var marcados = idxPuertos(eq);
       pu.forEach(function (p, i) {
-        html += '<button type="button" class="tp-fila' + (i === estado.puerto ? ' sel' : '') + '" data-p="' + i + '" style="' + cols + '"><span class="tp-nombre">' + esc(p.nombre) + '</span>';
+        html += '<button type="button" class="tp-fila' + (marcados.indexOf(i) >= 0 ? ' sel' : '') + '" data-p="' + i + '" aria-pressed="' + (marcados.indexOf(i) >= 0) + '" style="' + cols + '"><span class="tp-nombre"><span class="tp-check">' + (marcados.indexOf(i) >= 0 ? '✓' : '') + '</span>' + esc(p.nombre) + '</span>';
         lista.forEach(function (k) {
           var v = p.dias[k] || 0;
           var st = v > 0
@@ -504,7 +529,7 @@
         });
         html += '<span class="tp-total">' + p.total + '</span></button>';
       });
-      html += '</div></div><span class="nota">Haz clic en un puerto para usarlo en el ticket y en el gráfico.</span></div>';
+      html += '</div></div><span class="nota">Los puertos con ✓ van al ticket y a la imagen: se marcan solos los que caen de forma recurrente. Haz clic para agregar o quitar uno.</span></div>';
     } else {
       html += '<div class="seccion"><h3>Pérdida de comunicación por día</h3><svg viewBox="0 0 640 220" role="img" aria-label="Pérdida de comunicación por día" style="width:100%;height:auto">' + lineChart(d.diario, d.dias, 0, 0, 640, 220) + '</svg></div>';
     }
@@ -536,8 +561,8 @@
   function abrirHomologar() {
     var eq = eqSel();
     if (!eq || !eq._d) return;
-    var pl = P[estado.tipo], p = puertoSel(eq);
-    var pn = p ? p.nombre : '';
+    var pl = P[estado.tipo];
+    var pn = puertosSel(eq).map(function (p) { return p.nombre; });
     $('#mh-t').textContent = pl.titulo(eq, pn);
     $('#mh-c').textContent = pl.cuerpo(eq, pn);
     abrir('#modal-homologar');
@@ -546,7 +571,7 @@
   function abrirGrafico() {
     var eq = eqSel();
     if (!eq || !eq._d) return;
-    var arriba = evidenciaSVG(estado.tipo, eq, puertoSel(eq));
+    var arriba = evidenciaSVG(estado.tipo, eq, puertosSel(eq));
     var leyenda = '<span class="leyenda">Menos' +
       [0.1, 0.4, 0.75, 1].map(function (a) { return '<i style="background:rgba(38,125,143,' + a + ')"></i>'; }).join('') + 'Más</span>';
     var sems = eq._d.semanas;
@@ -603,7 +628,7 @@
     var box = document.querySelector('#mg-imagen .heat-scroll');
     var c0 = box ? Math.round(box.scrollLeft / PASO_X) : 0;
     var r0 = box ? Math.round(box.scrollTop / PASO_Y) : 0;
-    var img = evidenciaSVG(estado.tipo, eq, puertoSel(eq), { copia: true, c0: c0, r0: r0 });
+    var img = evidenciaSVG(estado.tipo, eq, puertosSel(eq), { copia: true, c0: c0, r0: r0 });
     var scale = 2;
     var blob = new Blob([img.svg], { type: 'image/svg+xml;charset=utf-8' });
     var url = URL.createObjectURL(blob);
@@ -660,9 +685,14 @@
   $('#detalle').addEventListener('click', function (ev) {
     var b = ev.target.closest('button[data-p]');
     if (!b) return;
-    estado.puerto = Number(b.getAttribute('data-p'));
     var eq = eqSel();
-    if (eq && eq._d) pintarDetalle(eq);
+    if (!eq || !eq._d) return;
+    var i = Number(b.getAttribute('data-p'));
+    var act = idxPuertos(eq).slice();
+    var pos = act.indexOf(i);
+    if (pos >= 0) { if (act.length > 1) act.splice(pos, 1); } else act.push(i);
+    estado.manual[claveSel(eq)] = act;
+    pintarDetalle(eq);
   });
 
   $('#mes').addEventListener('change', function (ev) {

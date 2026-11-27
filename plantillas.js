@@ -27,24 +27,29 @@ window.PLANTILLAS = {
     }
   },
 
-  // DOWN: BORRADOR. Falta que me pases tu plantilla real; ajusta estos textos.
+  // DOWN: puertos puede ser un texto o una lista de puertos (cuando caen varios en el mismo equipo)
   down: {
-    titulo: function (e, puerto) {
-      return 'LIMPIEZA DE RED, IRR, ' + e.nombre + ' - ' + puerto;
+    titulo: function (e, puertos) {
+      var l = [].concat(puertos);
+      return 'LIMPIEZA DE RED, IRR, ' + e.nombre + ' - ' + l.join(' + ');
     },
-    cuerpo: function (e, puerto) {
+    cuerpo: function (e, puertos) {
+      var l = [].concat(puertos);
       return [
         'BUEN DÍA EQUIPO,',
         '',
         'SOLICITAMOS SU APOYO CON LA REVISIÓN DEL SIGUIENTE ELEMENTO DE RED:',
         '',
         e.nombre + ' - ' + e.ip,
-        'PUERTO: ' + puerto,
+        l.length > 1 ? 'PUERTOS:' : 'PUERTO: ' + l[0]
+      ].concat(l.length > 1 ? l.map(function (x) { return '- ' + x; }) : []).concat([
         '',
         'SE HA PRESENTADO ' + _n(e.total) + ' ALARMAS EN LAS ÚLTIMAS SEMANAS.',
         '',
-        'SE SOLICITA REVISION Y CERTIFICACIÓN DEL CABLEADO DEL PUERTO PARA DESCARTAR UNA AFECTACIÓN FÍSICA.'
-      ].join('\n');
+        l.length > 1
+          ? 'SE SOLICITA REVISION Y CERTIFICACIÓN DEL CABLEADO DE LOS PUERTOS PARA DESCARTAR UNA AFECTACIÓN FÍSICA.'
+          : 'SE SOLICITA REVISION Y CERTIFICACIÓN DEL CABLEADO DEL PUERTO PARA DESCARTAR UNA AFECTACIÓN FÍSICA.'
+      ]).join('\n');
     }
   }
 };
