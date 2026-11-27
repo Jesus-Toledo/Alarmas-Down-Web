@@ -3,114 +3,54 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Monitor de caídas</title>
-<link rel="stylesheet" href="styles.css">
+<title>Portal NOC</title>
+<link rel="stylesheet" href="inicio.css">
 </head>
 <body>
-
-<div class="app">
-
-  <header class="top">
-    <div class="top-izq">
-      <div class="seg" role="tablist" aria-label="Tipo de reporte">
-        <button id="tab-down" role="tab" type="button">Puertos down</button>
-        <button id="tab-nr" role="tab" type="button">Not responding</button>
-      </div>
-      <h1 id="titulo"></h1>
-      <p class="sub" id="subtitulo"></p>
+<header class="barra"><div class="barra-in"><a class="marca" href="/"><i>N</i>Portal NOC</a></div></header>
+<main>
+  <section class="hero">
+    <svg aria-hidden="true" viewBox="0 0 520 220" preserveAspectRatio="xMaxYMid slice">
+        <g stroke="#267D8F" stroke-opacity="0.22" stroke-width="1.5" fill="none">
+          <path d="M40 160 L150 90 L260 130 L360 50 L480 100"/><path d="M150 90 L190 25 L360 50"/>
+          <path d="M260 130 L300 200 L420 170 L480 100"/><path d="M40 160 L90 205 L300 200"/>
+        </g>
+        <g fill="#FFFFFF" stroke="#267D8F" stroke-opacity="0.45" stroke-width="2">
+          <circle cx="40" cy="160" r="7"/><circle cx="150" cy="90" r="9"/><circle cx="260" cy="130" r="7"/>
+          <circle cx="360" cy="50" r="10"/><circle cx="480" cy="100" r="7"/><circle cx="190" cy="25" r="6"/>
+          <circle cx="300" cy="200" r="8"/><circle cx="420" cy="170" r="6"/><circle cx="90" cy="205" r="5"/>
+        </g>
+        <circle cx="360" cy="50" r="5" fill="#F9B641"/>
+      </svg>
+    <div class="hero-txt">
+      <span class="kicker">Bienvenido</span>
+      <h1>Selecciona un módulo</h1>
+      <p>Reportes de alarmas y seguimiento de tickets del NOC, cada uno en su sección.</p>
     </div>
-    <div class="top-der">
-      <div class="chip-info">
-        <span class="punto" aria-hidden="true"></span>
-        <div>
-          <span class="chip-label">Fuente de datos</span>
-          <span class="chip-valor" id="fuente"></span>
-        </div>
-        <button type="button" class="btn-mini" id="btn-recargar" title="Volver a leer el Excel">Recargar</button>
-      </div>
-      <div class="chip-info">
-        <div>
-          <span class="chip-label">Mes</span>
-          <span class="chip-valor" id="mes"></span>
-        </div>
-      </div>
-    </div>
-  </header>
+  </section>
 
-  <div class="aviso-datos" id="aviso-datos" role="status" hidden></div>
-
-  <section class="kpis" id="kpis" aria-label="Resumen"></section>
-
-  <main class="cuerpo">
-    <section class="card ranking" aria-label="Equipos con más caídas">
-      <div class="ranking-head">
-        <h2>Equipos con más caídas</h2>
-        <div class="filtros" id="filtros">
-          <button type="button" data-f="todos" class="activo">Todos</button>
-          <button type="button" data-f="sin">Sin ticket</button>
-          <button type="button" data-f="con">Con ticket</button>
-        </div>
-      </div>
-      <input id="buscar" class="buscar" type="search" placeholder="Buscar por nombre o IP" aria-label="Buscar por nombre o IP">
-      <div class="lista" id="lista"></div>
-      <p class="nota" id="nota-lista"></p>
-    </section>
-
-    <section class="card detalle" id="detalle" aria-label="Detalle del equipo"></section>
-  </main>
-
-  <div class="acciones">
-    <button type="button" class="btn primario" id="btn-homologar">Homologar ticket</button>
-    <button type="button" class="btn secundario" id="btn-grafico">Crear gráfico</button>
-  </div>
-
-</div>
-
-<!-- Modal: Homologar ticket -->
-<div class="scrim" id="modal-homologar" hidden>
-  <div class="modal modal-estrecho" role="dialog" aria-modal="true" aria-labelledby="mh-titulo">
-    <h2 id="mh-titulo">Homologar ticket</h2>
-
-    <div class="campo">
-      <span class="campo-titulo">Título del ticket</span>
-      <div class="caja">
-        <div class="caja-texto" id="mh-t"></div>
-        <button type="button" class="btn-copiar" data-copiar="mh-t">Copiar</button>
-      </div>
+  <!-- Para agregar un módulo: copia una tarjeta, cambia el enlace, el título y el texto, y crea su página .html -->
+  <section class="modulos" aria-label="Módulos">
+    <div class="mod">
+      <div class="mod-cab"><span class="mod-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#267D8F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a2 2 0 0 0 3.4 0"/></svg></span><span class="estado">Disponible</span></div>
+      <div><h2>Alarmas</h2><p>Repetitividad de caída de puertos y pérdida de comunicación. Ranking de equipos, estado del ticket y evidencia para homologar.</p></div>
+      <div class="etiquetas"><span>Puertos down</span><span>Not responding</span></div>
+      <div class="mod-pie"><a class="abrir" href="alarmas.html">Abrir</a></div>
     </div>
 
-    <div class="campo">
-      <span class="campo-titulo">Cuerpo del ticket</span>
-      <div class="caja">
-        <div class="caja-texto cuerpo-scroll" id="mh-c"></div>
-        <button type="button" class="btn-copiar" data-copiar="mh-c">Copiar</button>
-      </div>
+    <div class="mod mod-ambar">
+      <div class="mod-cab"><span class="mod-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#B7791F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6"/><path d="m9 16.5 1.2 1.2L13 15"/></svg></span><span class="estado">En construcción</span></div>
+      <div><h2>Cumplimiento de omisiones</h2><p>Seguimiento de los campos que se dejan vacíos al crear tickets, por persona y por campo.</p></div>
+      <div class="etiquetas"><span>Captura de tickets</span></div>
+      <div class="mod-pie"><a class="abrir" href="omisiones.html">Abrir</a></div>
     </div>
 
-    <div class="modal-pie">
-      <button type="button" class="btn secundario" data-cerrar>Cerrar</button>
+    <div class="nuevo">
+      <span class="nuevo-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5B6773" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
+      <b>Nuevo módulo</b>
+      <span>Cada sección nueva aparece aquí como una tarjeta más.</span>
     </div>
-  </div>
-</div>
-
-<!-- Modal: Crear gráfico -->
-<div class="scrim" id="modal-grafico" hidden>
-  <div class="modal modal-ancho" role="dialog" aria-modal="true" aria-labelledby="mg-titulo">
-    <div class="modal-cab">
-      <h2 id="mg-titulo">Crear gráfico</h2>
-      <p class="sub">Esta imagen es la que se copia al ticket.</p>
-    </div>
-    <div class="imagen-wrap" id="mg-imagen"></div>
-    <div class="modal-pie">
-      <button type="button" class="btn primario" id="mg-copiar">Copiar imagen</button>
-      <button type="button" class="btn secundario" data-cerrar>Cerrar</button>
-    </div>
-    <p class="aviso" id="mg-aviso" role="status"></p>
-  </div>
-</div>
-
-<script src="data.js"></script>
-<script src="plantillas.js"></script>
-<script src="app.js"></script>
+  </section>
+</main>
 </body>
 </html>

@@ -1,0 +1,50 @@
+/* Portal NOC: inicio y páginas de módulos nuevos */
+:root { --fondo: #F1F4F8; --borde: #DDE3EA; --texto: #14202B; --suave: #5B6773; --azul: #267D8F; --azul-claro: #E3F1F4; --ambar: #F9B641; --ambar-texto: #8A5A00; --ambar-fondo: #FDF3E3; --ambar-oscuro: #B7791F; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fondo); color: var(--texto); font-family: "Segoe UI", system-ui, Arial, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+a { text-decoration: none; color: inherit; }
+
+.barra { background: #fff; border-bottom: 1px solid var(--borde); }
+.barra-in { max-width: 1200px; margin: 0 auto; padding: 14px 32px; }
+.marca { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; }
+.marca i { width: 32px; height: 32px; border-radius: 4px; background: var(--azul); color: #fff; display: flex; align-items: center; justify-content: center; font-style: normal; font-size: 15px; }
+
+main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 24px 32px 32px; display: flex; flex-direction: column; gap: 24px; }
+
+.hero { position: relative; background: #fff; border: 1px solid var(--borde); border-radius: 4px; padding: 22px 32px; overflow: hidden; }
+.hero svg { position: absolute; right: 0; top: 0; height: 100%; width: 55%; max-width: 560px; }
+.hero-txt { position: relative; display: flex; flex-direction: column; gap: 6px; max-width: 520px; }
+.kicker { font-size: 13px; font-weight: 600; color: var(--azul); letter-spacing: .04em; text-transform: uppercase; }
+.hero h1 { margin: 0; font-size: 28px; line-height: 1.15; }
+.hero p { margin: 0; font-size: 15px; line-height: 1.5; color: var(--suave); }
+
+.modulos { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+.mod { background: #fff; border: 1px solid var(--borde); border-top: 4px solid var(--azul); border-radius: 4px; padding: 28px; display: flex; flex-direction: column; gap: 20px; min-height: 260px; }
+.mod-ambar { border-top-color: var(--ambar); }
+.mod-cab { display: flex; align-items: center; justify-content: space-between; }
+.mod-ico { width: 48px; height: 48px; border-radius: 4px; background: var(--azul-claro); display: flex; align-items: center; justify-content: center; }
+.mod-ambar .mod-ico { background: var(--ambar-fondo); }
+.estado { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 3px; color: #1B6B5A; background: #DDF3EC; }
+.mod-ambar .estado { color: var(--ambar-texto); background: var(--ambar-fondo); }
+.mod h2 { margin: 0 0 8px; font-size: 22px; }
+.mod p { margin: 0; font-size: 15px; line-height: 1.5; color: var(--suave); }
+.etiquetas { display: flex; flex-wrap: wrap; gap: 8px; }
+.etiquetas span { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 3px; color: var(--azul); background: var(--azul-claro); }
+.mod-ambar .etiquetas span { color: var(--ambar-texto); background: var(--ambar-fondo); }
+.mod-pie { margin-top: auto; display: flex; justify-content: flex-end; padding-top: 16px; border-top: 1px solid #EEF1F5; }
+.abrir { font-size: 14px; font-weight: 600; padding: 8px 16px; border-radius: 4px; color: var(--azul); background: var(--azul-claro); }
+.mod-ambar .abrir { color: var(--ambar-texto); background: var(--ambar-fondo); }
+.abrir:hover, .abrir:focus-visible { background: var(--azul); color: #fff; }
+.mod-ambar .abrir:hover, .mod-ambar .abrir:focus-visible { background: var(--ambar-oscuro); color: #fff; }
+
+.nuevo { border: 1.5px dashed #B8C3CF; border-radius: 4px; padding: 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-height: 260px; text-align: center; color: var(--suave); }
+.nuevo-ico { width: 48px; height: 48px; border-radius: 4px; border: 1.5px dashed #B8C3CF; display: flex; align-items: center; justify-content: center; }
+.nuevo b { font-size: 16px; color: var(--texto); }
+.nuevo span { font-size: 14px; line-height: 1.5; max-width: 220px; }
+
+/* Página de módulo en construcción */
+.volver { font-size: 13px; font-weight: 600; color: var(--azul); }
+.volver:hover { text-decoration: underline; }
+.vacio-mod { background: #fff; border: 1px solid var(--borde); border-radius: 4px; padding: 48px 32px; text-align: center; color: var(--suave); }
+.vacio-mod h1 { margin: 0 0 8px; font-size: 24px; color: var(--texto); }
+.vacio-mod p { margin: 0; font-size: 15px; line-height: 1.5; }
